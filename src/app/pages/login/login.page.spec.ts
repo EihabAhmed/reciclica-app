@@ -6,7 +6,7 @@ import { Store, StoreModule } from '@ngrx/store';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppState } from 'src/store/AppState';
 import { loadingReducer } from 'src/store/loading/loading.reducers';
-import { recoverPassword, recoverPasswordSuccess } from 'src/store/login/login.actions';
+import { recoverPassword, recoverPasswordFail, recoverPasswordSuccess } from 'src/store/login/login.actions';
 import { loginReducer } from 'src/store/login/login.reducers';
 
 import { LoginPage } from './login.page';
@@ -91,6 +91,19 @@ describe('LoginPage', () => {
     fixture.detectChanges();
     store.dispatch(recoverPassword());
     store.dispatch(recoverPasswordSuccess());
+    store.select('loading').subscribe(loadingState => {
+      expect(loadingState.show).toBeFalsy();
+    })
+
+    expect(toastController.create).toHaveBeenCalledTimes(1);
+  })
+
+  it('should hide loading and show error message when error on recover password', () => {
+    spyOn(toastController, 'create');
+
+    fixture.detectChanges();
+    store.dispatch(recoverPassword());
+    store.dispatch(recoverPasswordFail({error: "message"}));
     store.select('loading').subscribe(loadingState => {
       expect(loadingState.show).toBeFalsy();
     })
