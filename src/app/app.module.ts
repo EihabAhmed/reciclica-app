@@ -9,6 +9,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppStoreModule } from 'src/store/AppStoreModule';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { LoadingModule } from "./modules/loading/loading.module";
+import { AngularFireModule } from '@angular/fire';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
     declarations: [AppComponent],
@@ -18,6 +20,7 @@ import { LoadingModule } from "./modules/loading/loading.module";
         BrowserModule,
         IonicModule.forRoot(),
         AppRoutingModule,
+        AngularFireModule.initializeApp(environment.firebaseConfig),
         ...AppStoreModule,
         StoreDevtoolsModule.instrument({ maxAge: 25 }),
         LoadingModule
