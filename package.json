@@ -28,7 +28,7 @@
     "@ionic/angular": "^6.1.9",
     "@ngrx/store": "^15.2.1",
     "@ngrx/store-devtools": "^15.2.1",
-    "firebase": "^9.17.1",
+    "firebase": "^9.17.2",
     "ionicons": "^6.0.3",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

@@ -1,12 +1,14 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire/compat';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { Store, StoreModule } from '@ngrx/store';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { User } from 'src/app/model/user/User';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { environment } from 'src/environments/environment';
 import { AppState } from 'src/store/AppState';
 import { loadingReducer } from 'src/store/loading/loading.reducers';
 import { recoverPassword, recoverPasswordFail, recoverPasswordSuccess } from 'src/store/login/login.actions';
@@ -33,7 +35,8 @@ describe('LoginPage', () => {
         ReactiveFormsModule,
         StoreModule.forRoot([]),
         StoreModule.forFeature("loading", loadingReducer),
-        StoreModule.forFeature("login", loginReducer)
+        StoreModule.forFeature("login", loginReducer),
+        AngularFireModule.initializeApp(environment.firebaseConfig)
       ]
     }).compileComponents();
 
@@ -66,17 +69,13 @@ describe('LoginPage', () => {
   });
 
   it('should recover email/password on forgot email/password', () => {
+    spyOn(authService, 'recoverEmailPassword').and.returnValue(new Observable(() => {}));
     fixture.detectChanges();
     component.form.get('email').setValue("valid@email.com");
     page.querySelector("#recoverPasswordButton").click();
     store.select('login').subscribe(loginState => {
       expect(loginState.isRecoveringPassword).toBeTruthy();
     })
-  })
-
-  it('should show loading when recovering password', () => {
-    fixture.detectChanges();
-    store.dispatch(recoverPassword());
     store.select('loading').subscribe(loadingState => {
       expect(loadingState.show).toBeTruthy();
     })
@@ -109,6 +108,8 @@ describe('LoginPage', () => {
   })
 
   it('should show loading and start login when logging in', () => {
+    spyOn(authService, 'login').and.returnValue(new Observable(() => {}));
+
     fixture.detectChanges();
     component.form.get('email').setValue('valid@email.com');
     component.form.get('password').setValue('anyPassword');
